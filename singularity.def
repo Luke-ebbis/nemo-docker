@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: debian:bullseye-slim
+
+%files
+    nmo /app/nmo
+
+%post
+    apt-get update && apt-get install -y \
+        openssl \
+        libssl-dev \
+        ca-certificates \
+        --no-install-recommends && \
+        rm -rf /var/lib/apt/lists/*
+    
+    chmod +x /app/nmo
+    mkdir -p /app/results /app/data /app/rules
+
+%environment
+    export PATH="/app:$PATH"
+    export LC_ALL=C
+
+%runscript
+    exec /app/nmo "$@"
+
+%help
+    Nemo (nmo) is a datalog-based rule engine for fast and scalable analytic data processing in memory.
